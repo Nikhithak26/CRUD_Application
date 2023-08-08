@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dashboard Application</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        *{
+            margin: 0px;
+            padding: 0px;
+            }
+        .table{
+            margin: 30px;
+        }
+        table{
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            padding: 1em;
+        }
+        header{
+            background-color: #1E1E1E;
+            height: 75px;
+            color: white;
+            display: flex;
+            align-items: center;
+            padding-left: 20px;
+            margin-bottom: 30px;
+        }
+        #button{
+            margin-left: 20px;
+            padding: 5px 30px;
+            background-color: black;
+            color: white;
+            cursor: pointer;
+        }
+        table tr th, table td{
+            padding: 5px 10px;
+        }
+        #body button{
+            background-color: black;
+            color: white;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        input:focus{
+            border: none;
+        }
+        .popup1{
+            visibility: hidden;
+            height: 60%;
+            background-color: #dddddd;
+            width: 30%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 5px 5px 10px rgb(0, 0, 0);
+            /* border-radius: 10px; */
+        }
+        
+        input{
+            width: 20vw;
+            height: 30px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+        }
+        .btn1{
+            height: 35px;
+            background-color: rgb(39 39 183);
+            color: white;
+            cursor: pointer;
+        }
+        #popup_close_icon{
+            cursor: pointer;
+            color:blue;
+            position: absolute;
+            left: 94%;
+            bottom: 92%;
+        }
+        #edit{
+            background-color:green !important;
+            border: none;
+            }
+        #delete{
+            background-color:red !important;
+            border: none;
+
+        }
+        #error_msg, #error_msg1{
+            align-items: center;
+            color: red;
+
+        }
+    </style>
+    </head>
+    <div id="popup" class="popup1">
+        <div>
+            <h3>Add New Student <i class="fa-solid fa-xmark" id="popup_close_icon"></i></h3>
+        </div>
+        <div>
+            <input type="text" id="name" placeholder="Name">
+        </div>
+        <div>
+            <input type="number" id="rollno" placeholder="Roll No">
+        </div>
+        <div>
+            <input type="text" id="subject" placeholder="Subject">
+        </div>
+        <div>
+            <input type="number" id="marks" placeholder="Marks">
+        </div>
+        <div>
+            <input type="button" id="btn" class="btn1" value="save">
+        </div>
+        <p id="error_msg">Fill the blacks</p>
+    </div>
+    <div id="popup_edit" class="popup1">
+            <div>
+                <h3> edit Student details <i class="fa-solid fa-xmark" id="edit_popup_close_icon"></i></h3>
+            </div>
+            <div>
+                <input type="text" id="edit_name" placeholder="Name">
+            </div>
+            <div>
+                <input type="number" id="edit_rollno" placeholder="Roll No">
+            </div>
+            <div>
+                <input type="text" id="edit_subject" placeholder="Subject">
+            </div>
+            <div>
+                <input type="number" id="edit_marks" placeholder="Marks">
+            </div>
+            <div>
+                <input type="button" id="edit_btn" class="btn1" value="update">
+            </div>
+            <p id="error_msg">Fill the blacks</p>
+        </div>
+    <body>
+        <header>
+            <h1>dashboard</h1>
+        </header>
+        <main>
+            <button id="button">Add New Student</button>
+            <button id="button">Delete All</button>
+        </main>
+        <div class = "table">
+        <table border="1px">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Student Name</th>
+                    <th>Student Roll</th>
+                    <th>Subject</th>
+                    <th>Marks</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+        <tbody id = "body">
+        </tbody>
+        </table>
+        </div>
+        <script>
+        document.getElementById("button").addEventListener('click', showpopup)
+        function showpopup(){
+            document.getElementById('name').value = ''
+            document.getElementById('rollno').value = ''
+            document.getElementById('subject').value = ''
+            document.getElementById('marks').value = ''
+            document.getElementById('popup').style.visibility = 'visible';
+        }
+        document.getElementById("popup_close_icon").addEventListener('click', close_popup);
+        function close_popup(){
+            document.getElementById('popup').style.visibility = 'hidden';
+        }
+        document.getElementById('btn').addEventListener('click', save_details);
+        var i = 1;
+        function save_details(){
+            var body = document.getElementById("body");
+            var name = document.getElementById('name').value
+            var rollno = document.getElementById('rollno').value
+            var subject = document.getElementById('subject').value
+            var marks = document.getElementById('marks').value
+            var newrow = document.createElement('tr');
+            if(name=="" || rollno=="" || subject=="" || marks==""){
+                document.getElementById("error_msg").style.display = "block";
+            }else{
+
+            
+        
+            //<tr></tr>;
+    
+            newrow.innerHTML = `
+            <td>${i++}</td>
+            <td>${name}</td>
+            <td>${rollno}</td>
+            <td>${subject}</td>
+            <td>${marks}</td>
+            <td><button id = "edit">Edit</button></td>
+            <td><button  id = "delete">Delete</button></td>
+            `;
+            body.appendChild(newrow);
+            document.getElementById('popup').style.visibility = 'hidden';
+            }
+        }
+            document.addEventListener('click', edit_data)
+            var previous_Node=null;
+            function edit_data(event){
+                target = event.target;
+                //console.log(target);
+                if(target.id == 'edit'){
+                    var node = target.parentNode.parentNode;
+                    //console.log(parentnode);
+                    var cells = node.getElementsByTagName("td");
+                    //console.log(cells)
+                    previous_Node=cells;
+                    document.getElementById("edit_name").value = cells[1].textContent;
+                    //console.log(edit_name)
+                    document.getElementById("edit_rollno").value = cells[2].textContent;
+                    //console.log(edit_rollno)
+                    document.getElementById("edit_subject").value = cells[3].textContent;
+                    document.getElementById("edit_marks").value = cells[4].textContent;
+                    document.getElementById("popup_edit").style.visibility = "visible";
+                    //console.log(popup_edit)
+                }
+                else if(target.id == 'delete'){
+                    var node = target.parentNode.parentNode;
+                     node.parentNode.removeChild(node);
+                }
+            }
+            document.getElementById("edit_popup_close_icon").addEventListener('click', close_edit_popup);
+            //console.log(popup_close_icon)
+            function close_edit_popup(){
+                document.getElementById('popup_edit').style.visibility = 'hidden';
+                //console.log(popup_edit)
+            }
+            document.getElementById('edit_btn').addEventListener('click',update_details)
+
+            //console.log(edit_btn)
+            function update_details(){
+                var update_name= document.getElementById("edit_name");
+                var update_rollno= document.getElementById('edit_rollno').value
+                var update_subject= document.getElementById('edit_subject').value
+                var update_marks= document.getElementById('edit_marks').value
+                if(update_name=="" || update_rollno=="" || update_subject=="" || update_marks==""){
+                    document.getElementById("error_msg1").style.display = "block";
+                }else{
+
+                
+
+
+
+
+
+
+                //console.log(previous_Node)
+                previous_Node[1].textContent = document.getElementById("edit_name").value;
+                //console.log("hi")
+                previous_Node[2].textContent = document.getElementById("edit_rollno").value;
+                
+                previous_Node[3].textContent = document.getElementById("edit_subject").value;
+                previous_Node[4].textContent = document.getElementById("edit_marks").value;
+                document.getElementById("popup_edit").style.visibility = 'hidden';
+                }
+            }
+                
+            
+
+
+
+                
+    
+
+        </script>
+    </body>
+</html>
+
+    
+
+
+
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
+
+
+
+
+
